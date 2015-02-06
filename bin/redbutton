@@ -50,13 +50,21 @@ desc 'Describe version here'
 arg_name 'Describe arguments to version here'
 command :version do |c|
 
-  c.desc 'Describe a flag to notes'
+  c.desc 'Path of the version file'
   c.default_value 'config/initializers/version.rb'
   c.flag :version_file
 
+  c.desc 'Version segment to update'
+  c.default_value 'patch'
+  c.flag :segment
 
-  c.action do |global_options,options,args|
-    puts "version command ran"
+  c.action do |_, options, _|
+    version_file_tool = VersionFileTool.new(options[:version_file])
+
+    version = ProjectVersion.new(*version_file_tool.parse_version.values)
+    version.bump!(options[:segment])
+
+    version_file_tool.update_version(version.to_s)
   end
 end
 

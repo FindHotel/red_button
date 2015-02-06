@@ -19,8 +19,6 @@ class VersionFileTool
       version_line = f.readline
     end
 
-    p 'som'
-
     {
       major: version_line[VERSION_FORMAT, 'major'].to_i,
       minor: version_line[VERSION_FORMAT, 'minor'].to_i,
