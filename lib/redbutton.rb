@@ -4,4 +4,4 @@ require 'redbutton/version'
 # you just need to require this one file in your bin file
 
 require 'redbutton/models/project_version'
-require 'redbutton/version_file_tools'
+require 'redbutton/version_file_tool'
