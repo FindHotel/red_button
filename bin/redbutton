@@ -18,45 +18,43 @@ version Redbutton::VERSION
 subcommand_option_handling :normal
 arguments :strict
 
-desc 'Describe some switch here'
-switch [:s,:switch]
+desc 'Path of the Git project'
+flag :project_path
 
-desc 'Describe some flag here'
-default_value 'the default'
-arg_name 'The name of the argument'
-flag [:f,:flagname]
+desc 'Release notes folder path'
+default_value 'release-notes'
+flag :release_notes_folder
+
+desc 'Path of the version file'
+default_value 'config/initializers/version.rb'
+flag :version_file
+
+# desc 'Source branch for getting the release notes'
+# default_value 'develop'
+# flag :branch
+# TODO implement configurable matchers logic
+# c.desc ''
+# c.flag :matchers
+# TODO implement configurable last_message_matcher logic
+# c.desc ''
+# c.flag :last_message_matcher
+
+desc 'Version segment to update'
+default_value 'patch'
+flag :segment
+
 
 desc 'Describe notes here'
 arg_name 'Describe arguments to notes here'
 command :release_notes do |c|
-  c.desc 'Path of the Git project'
-  c.flag :project_path
-
-  c.desc 'Source branch for getting the release notes'
-  c.default_value 'develop'
-  c.flag :branch
-
-  c.desc 'Release notes folder path'
-  c.flag :release_notes_path
-
-  c.desc 'Release notes version'
-  c.flag :version
-
-  # TODO implement configurable matchers logic
-  # c.desc ''
-  # c.flag :matchers
-  #
-
-  # TODO implement configurable last_message_matcher logic
-  # c.desc ''
-  # c.flag :last_message_matcher
-  #
-  c.action do |_, options, _|
+  c.action do |options, _, _|
     config = {
       matchers: ReleaseNote::TYPES,
-      last_message_matcher: 'Merge tag',
-      source_branch: options[:develop]
+      last_message_matcher: 'Merge tag'
     }
+
+    version_file_tool = VersionFileTool.new(File.join(options[:project_path], options[:version_file]))
+    version = ProjectVersion.new(*version_file_tool.parse_version.values)
 
     glr = GitLogReader.new(options[:project_path], config)
     commit_messages = glr.read
@@ -69,13 +67,12 @@ command :release_notes do |c|
       result
     end
 
-    version = ProjectVersion.new(*options[:version].split('.'))
     date = Time.now.strftime('%B %-d, %H:%M')
 
     template = ERB.new(File.read('templates/release_notes.txt.erb'), nil, '-')
     file_contents = template.result(binding)
 
-    writer = ReleaseNotesWriter.new(options[:release_notes_path], version)
+    writer = ReleaseNotesWriter.new(File.join(options[:project_path], options[:release_notes_folder]), version)
 
     writer.write(file_contents)
 
@@ -86,17 +83,8 @@ end
 desc 'Describe version here'
 arg_name 'Describe arguments to version here'
 command :version do |c|
-
-  c.desc 'Path of the version file'
-  c.default_value 'config/initializers/version.rb'
-  c.flag :version_file
-
-  c.desc 'Version segment to update'
-  c.default_value 'patch'
-  c.flag :segment
-
-  c.action do |_, options, _|
-    version_file_tool = VersionFileTool.new(options[:version_file])
+  c.action do |options, _, _|
+    version_file_tool = VersionFileTool.new(File.join(options[:project_path], options[:version_file]))
 
     version = ProjectVersion.new(*version_file_tool.parse_version.values)
     version.bump!(options[:segment])
