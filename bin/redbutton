@@ -46,7 +46,7 @@ flag :segment
 
 desc 'Describe notes here'
 arg_name 'Describe arguments to notes here'
-command :release_notes do |c|
+command :create_release_notes do |c|
   c.action do |options, _, _|
     config = {
       matchers: ReleaseNote::TYPES,
@@ -82,7 +82,7 @@ end
 
 desc 'Describe version here'
 arg_name 'Describe arguments to version here'
-command :version do |c|
+command :bump_version do |c|
   c.action do |options, _, _|
     version_file_tool = VersionFileTool.new(File.join(options[:project_path], options[:version_file]))
 
