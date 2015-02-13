@@ -28,21 +28,39 @@ flag [:f,:flagname]
 
 desc 'Describe notes here'
 arg_name 'Describe arguments to notes here'
-command :notes do |c|
-  c.desc 'Describe a switch to notes'
-  c.switch :s
+command :release_notes do |c|
+  c.desc 'Path of the Git project'
+  c.flag :project_path
 
-  c.desc 'Describe a flag to notes'
-  c.default_value 'default'
-  c.flag :f
-  c.action do |global_options,options,args|
+  c.desc 'Source branch for getting the release notes'
+  c.default_value 'develop'
+  c.flag :branch
 
-    # Your command logic here
-     
-    # If you have any errors, just raise them
-    # raise "that command made no sense"
+  # TODO implement configurable matchers logic
+  # c.desc ''
+  # c.flag :matchers
+  #
 
-    puts "notes command ran"
+  # TODO implement configurable last_message_matcher logic
+  # c.desc ''
+  # c.flag :last_message_matcher
+  #
+  c.action do |_, options, _|
+    config = {
+      matchers: {
+        bugfix: ['BUGFIX:'],
+        feature: ['FEATURE:'],
+        change: ['CHANGE:']
+      },
+      last_message_matcher: 'Merge tag',
+      source_branch: options[:develop]
+    }
+
+    glr = GitLogReader.new(options[:project_path], config)
+
+    commit_messages = glr.read
+
+    puts commit_messages.inspect
   end
 end
 

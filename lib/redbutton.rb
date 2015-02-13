@@ -5,3 +5,4 @@ require 'redbutton/version'
 
 require 'redbutton/models/project_version'
 require 'redbutton/version_file_tool'
+require 'redbutton/git_log_reader'

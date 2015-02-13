@@ -5,13 +5,6 @@ class GitLogReader
   LOG_LIMIT = 1000
 
   def initialize(git_project_path, config)
-    # config = {
-    #   matchers: {
-    #     bugfix: ['Bug', 'Fix']
-    #   },
-    #   last_message_matcher: 'Merge tag'
-    # }
-
     @repository = Git.open(git_project_path)
     @matchers = config[:matchers]
     @last_message_matcher = config[:last_message_matcher]
