@@ -19,5 +19,7 @@ spec = Gem::Specification.new do |s|
   s.add_development_dependency('rake')
   s.add_development_dependency('rdoc')
   s.add_development_dependency('aruba')
+  s.add_development_dependency('rspec')
   s.add_runtime_dependency('gli','2.12.2')
+  s.add_runtime_dependency('git','1.2.9')
 end
