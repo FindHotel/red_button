@@ -1,0 +1,12 @@
+Release notes for version <%= version %>
+================================
+<%# Codename: Jerry %>
+Notes:
+------
+Includes all the changes done until <%= date %>.
+<% release_notes_by_type.each do |type, release_notes| %>
+<%= ReleaseNote.get_human_readable_type(type) -%>:
+<%- release_notes.each do |release_note| -%>
+- <%= release_note.message %>
+<%- end -%>
+<% end %>

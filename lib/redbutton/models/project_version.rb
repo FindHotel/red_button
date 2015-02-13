@@ -1,4 +1,5 @@
 class ProjectVersion
+  attr_reader :major, :minor, :patch
 
   def initialize(major, minor, patch)
     @major, @minor, @patch = major, minor, patch

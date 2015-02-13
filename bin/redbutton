@@ -36,6 +36,12 @@ command :release_notes do |c|
   c.default_value 'develop'
   c.flag :branch
 
+  c.desc 'Release notes folder path'
+  c.flag :release_notes_path
+
+  c.desc 'Release notes version'
+  c.flag :version
+
   # TODO implement configurable matchers logic
   # c.desc ''
   # c.flag :matchers
@@ -47,20 +53,33 @@ command :release_notes do |c|
   #
   c.action do |_, options, _|
     config = {
-      matchers: {
-        bugfix: ['BUGFIX:'],
-        feature: ['FEATURE:'],
-        change: ['CHANGE:']
-      },
+      matchers: ReleaseNote::TYPES,
       last_message_matcher: 'Merge tag',
       source_branch: options[:develop]
     }
 
     glr = GitLogReader.new(options[:project_path], config)
-
     commit_messages = glr.read
 
-    puts commit_messages.inspect
+    release_notes_by_type = commit_messages.inject({}) do |result, (type, commit_messages)|
+      result[type] = commit_messages.inject([]) do |result, commit_message|
+        result ||= []
+        result << ReleaseNote.new(type, commit_message)
+      end if commit_messages.size > 0
+      result
+    end
+
+    version = ProjectVersion.new(*options[:version].split('.'))
+    date = Time.now.strftime('%B %-d, %H:%M')
+
+    template = ERB.new(File.read('templates/release_notes.txt.erb'), nil, '-')
+    file_contents = template.result(binding)
+
+    writer = ReleaseNotesWriter.new(options[:release_notes_path], version)
+
+    writer.write(file_contents)
+
+    puts file_contents
   end
 end
 
@@ -112,6 +131,10 @@ end
 on_error do |exception|
   # Error logic here
   # return false to skip default error handling
+
+  p exception.message
+  p exception.backtrace.first
+
   true
 end
 

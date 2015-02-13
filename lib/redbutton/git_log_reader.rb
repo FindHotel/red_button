@@ -19,12 +19,9 @@ class GitLogReader
     previous_tag_commit = @repository.log(LOG_LIMIT).grep(@last_message_matcher).first
 
     log_range = @repository.log(LOG_LIMIT).between(previous_tag_commit.sha, 'HEAD')
-    result = @matchers.inject({}) do |result, (name, string_matchers)|
-      result[name] = string_matchers.inject([]) do |accumulator, string_matcher|
-        accumulator.concat(log_range.grep(string_matcher).map(&:message))
-        accumulator
-      end
-
+    result = @matchers.inject({}) do |result, (name, string_matcher)|
+      result[name] ||= []
+      result[name].concat(log_range.grep(string_matcher).map(&:message))
       result
     end
 
