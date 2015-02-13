@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require 'gli'
+require 'redbutton'
 # begin # XXX: Remove this begin/rescue before distributing your app
-# require 'redbutton'
 # rescue LoadError
 #   STDERR.puts "In development, you need to use `bundle exec bin/redbutton` to run your app"
 #   STDERR.puts "At install-time, RubyGems will make sure lib, etc. are in the load path"
