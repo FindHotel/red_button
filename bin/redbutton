@@ -69,7 +69,7 @@ command :create_release_notes do |c|
 
     date = Time.now.strftime('%B %-d, %H:%M')
 
-    template = ERB.new(File.read('lib/redbutton/templates/release_notes.txt.erb'), nil, '-')
+    template = ERB.new(File.read(File.join(File.dirname(__FILE__), '../lib/redbutton/templates/release_notes.txt.erb')), nil, '-')
     file_contents = template.result(binding)
 
     writer = ReleaseNotesWriter.new(File.join(options[:project_path], options[:release_notes_folder]), version)
