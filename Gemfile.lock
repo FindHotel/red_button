@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    redbutton (0.0.5)
+    redbutton (0.0.6)
       git (= 1.2.9)
       gli (= 2.12.2)
 

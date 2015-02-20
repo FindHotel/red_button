@@ -19,6 +19,7 @@ subcommand_option_handling :normal
 arguments :strict
 
 desc 'Path of the Git project'
+default_value '.'
 flag :project_path
 
 desc 'Release notes folder path'
