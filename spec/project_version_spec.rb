@@ -10,7 +10,7 @@ describe 'ProjectVersion' do
 
     let(:original_version) { [major, minor, patch].join('.') }
 
-    let(:project_version) { ProjectVersion.new(major, minor, patch) }
+    let(:project_version) { TheRedButton::Models::ProjectVersion.new(major, minor, patch) }
 
     context 'bumping up patch segment' do
       it 'should bump up the specified segment' do

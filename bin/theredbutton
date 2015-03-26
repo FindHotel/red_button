@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
 require 'gli'
-require 'redbutton'
+require 'theredbutton'
 # begin # XXX: Remove this begin/rescue before distributing your app
 # rescue LoadError
-#   STDERR.puts "In development, you need to use `bundle exec bin/redbutton` to run your app"
+#   STDERR.puts "In development, you need to use `bundle exec bin/theredbutton` to run your app"
 #   STDERR.puts "At install-time, RubyGems will make sure lib, etc. are in the load path"
-#   STDERR.puts "Feel free to remove this message from bin/redbutton now"
+#   STDERR.puts "Feel free to remove this message from bin/theredbutton now"
 #   exit 64
 # end
 
@@ -13,7 +13,7 @@ include GLI::App
 
 program_desc 'Describe your application here'
 
-version Redbutton::VERSION
+version TheRedButton::VERSION
 
 subcommand_option_handling :normal
 arguments :strict
@@ -50,14 +50,14 @@ arg_name 'Describe arguments to notes here'
 command :create_release_notes do |c|
   c.action do |options, _, _|
     config = {
-      matchers: ReleaseNote::TYPES,
+      matchers: TheRedButton::Models::ReleaseNote::TYPES,
       last_message_matcher: 'Merge tag'
     }
 
-    version_file_tool = VersionFileTool.new(File.join(options[:project_path], options[:version_file]))
-    version = ProjectVersion.new(*version_file_tool.parse_version.values)
+    version_file_tool = TheRedButton::Utils::VersionFileTool.new(File.join(options[:project_path], options[:version_file]))
+    version = TheRedButton::Models::ProjectVersion.new(*version_file_tool.parse_version.values)
 
-    glr = GitLogReader.new(options[:project_path], config)
+    glr = TheRedButton::Utils::GitLogReader.new(options[:project_path], config)
     commit_messages = glr.read
 
     release_notes_by_type = commit_messages.inject({}) do |result, (type, commit_messages)|
@@ -70,10 +70,10 @@ command :create_release_notes do |c|
 
     date = Time.now.strftime('%B %-d, %H:%M')
 
-    template = ERB.new(File.read(File.join(File.dirname(__FILE__), '../lib/redbutton/templates/release_notes.txt.erb')), nil, '-')
+    template = ERB.new(File.read(File.join(File.dirname(__FILE__), '../lib/theredbutton/templates/release_notes.txt.erb')), nil, '-')
     file_contents = template.result(binding)
 
-    writer = ReleaseNotesWriter.new(File.join(options[:project_path], options[:release_notes_folder]), version)
+    writer = TheRedButton::Utils::ReleaseNotesWriter.new(File.join(options[:project_path], options[:release_notes_folder]), version)
 
     writer.write(file_contents)
 
@@ -85,9 +85,9 @@ desc 'Describe version here'
 arg_name 'Describe arguments to version here'
 command :bump_version do |c|
   c.action do |options, _, _|
-    version_file_tool = VersionFileTool.new(File.join(options[:project_path], options[:version_file]))
+    version_file_tool = TheRedButton::Utils::VersionFileTool.new(File.join(options[:project_path], options[:version_file]))
 
-    version = ProjectVersion.new(*version_file_tool.parse_version.values)
+    version = TheRedButton::Models::ProjectVersion.new(*version_file_tool.parse_version.values)
     version.bump!(options[:segment])
 
     version_file_tool.update_version(version.to_s)

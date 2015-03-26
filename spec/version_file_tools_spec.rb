@@ -14,7 +14,7 @@ describe 'VersionFileTools' do
   let(:updated_version) { '1.2.6' }
 
   let(:file_handle) { OpenStruct.new(readline: "VERSION = '#{project_version}'", write: nil) }
-  let(:version_file_tool) { VersionFileTool.new(version_file_path) }
+  let(:version_file_tool) { TheRedButton::VersionFileTool.new(version_file_path) }
 
   describe 'parse_version' do
     before do
