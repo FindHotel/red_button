@@ -91,7 +91,10 @@ command :bump_version do |c|
     version.bump!(options[:segment])
 
     version_file_tool.update_version(version.to_s)
+  
+    puts version.to_s
   end
+
 end
 
 desc 'Describe all here'
