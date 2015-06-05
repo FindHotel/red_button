@@ -8,8 +8,12 @@ class ReleaseNotesWriter
   end
 
   def write(content)
-
     subdir_name = "#{@version.major}.#{@version.minor}"
+
+    if @version.suffix
+      subdir_name << '/' + @version.suffix.match(/(beta|rc)/)[0]
+    end
+
     out_dir_path = File.join(@folder, subdir_name)
 
     ensure_folder_exists(out_dir_path)
@@ -26,7 +30,6 @@ class ReleaseNotesWriter
   def ensure_folder_exists(path)
     dirname = File.dirname(path)
     FileUtils.mkdir_p(dirname) unless File.directory?(dirname)
-
   end
 
 end
