@@ -1,6 +1,6 @@
 class VersionFileTool
 
-  VERSION_FORMAT = /VERSION\s?=\s?'(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)'/
+  VERSION_FORMAT = /VERSION\s?=\s?'(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)(\.(?<suffix>(beta|rc)\d+))?'/
 
   def initialize(version_file_path)
     @version_file_path = version_file_path
@@ -10,7 +10,6 @@ class VersionFileTool
     File.open(@version_file_path, 'w') do |f|
       f.write("VERSION = '#{version}'")
     end
-
   end
 
   def parse_version
@@ -22,7 +21,8 @@ class VersionFileTool
     {
       major: version_line[VERSION_FORMAT, 'major'].to_i,
       minor: version_line[VERSION_FORMAT, 'minor'].to_i,
-      patch: version_line[VERSION_FORMAT, 'patch'].to_i
+      patch: version_line[VERSION_FORMAT, 'patch'].to_i,
+      suffix: version_line[VERSION_FORMAT, 'suffix']
     }
   end
 end
