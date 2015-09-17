@@ -19,6 +19,7 @@ subcommand_option_handling :normal
 arguments :strict
 
 desc 'Path of the Git project'
+default_value '.'
 flag :project_path
 
 desc 'Release notes folder path'
@@ -40,9 +41,8 @@ flag :version_file
 # c.flag :last_message_matcher
 
 desc 'Version segment to update'
-default_value 'patch'
+default_value 'suffix'
 flag :segment
-
 
 desc 'Describe notes here'
 arg_name 'Describe arguments to notes here'
@@ -69,7 +69,7 @@ command :create_release_notes do |c|
 
     date = Time.now.strftime('%B %-d, %H:%M')
 
-    template = ERB.new(File.read('templates/release_notes.txt.erb'), nil, '-')
+    template = ERB.new(File.read(File.join(File.dirname(__FILE__), '../lib/redbutton/templates/release_notes.txt.erb')), nil, '-')
     file_contents = template.result(binding)
 
     writer = ReleaseNotesWriter.new(File.join(options[:project_path], options[:release_notes_folder]), version)
@@ -90,6 +90,8 @@ command :bump_version do |c|
     version.bump!(options[:segment])
 
     version_file_tool.update_version(version.to_s)
+
+    puts version.to_s
   end
 end
 
@@ -97,7 +99,7 @@ desc 'Describe all here'
 arg_name 'Describe arguments to all here'
 command :all do |c|
   c.action do |global_options,options,args|
-    puts "all command ran"
+    #puts "all command ran"
   end
 end
 
