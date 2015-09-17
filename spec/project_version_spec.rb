@@ -10,11 +10,11 @@ describe 'ProjectVersion' do
 
     let(:original_version) { [major, minor, patch].join('.') }
 
-    let(:project_version) { TheRedButton::Models::ProjectVersion.new(major, minor, patch) }
+    let(:project_version) { RedButton::Models::ProjectVersion.new(major, minor, patch) }
 
     context 'bumping up suffix segment' do
       context 'when it is a beta version' do
-        let(:project_version_with_beta) { ProjectVersion.new(1, 2, 0, 'beta1') }
+        let(:project_version_with_beta) { RedButton::Models::ProjectVersion.new(1, 2, 0, 'beta1') }
 
         it 'should increment the beta value, not the patch' do
           expect { project_version_with_beta.bump!('suffix') }.to change { project_version_with_beta.to_s }
@@ -23,7 +23,7 @@ describe 'ProjectVersion' do
         end
       end
       context 'when it is a rc version' do
-        let(:project_version_with_rc) { ProjectVersion.new(1, 2, 0, 'rc2') }
+        let(:project_version_with_rc) { RedButton::Models::ProjectVersion.new(1, 2, 0, 'rc2') }
 
         it 'should increment the rc value, not the patch' do
           expect { project_version_with_rc.bump!('suffix') }.to change { project_version_with_rc.to_s }

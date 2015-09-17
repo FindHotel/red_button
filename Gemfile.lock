@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    theredbutton (0.0.8)
+    redbutton (0.0.8)
       confiture (= 0.1.4)
       git (= 1.2.9)
       gli (= 2.12.2)
@@ -63,8 +63,8 @@ DEPENDENCIES
   git
   rake
   rdoc
+  redbutton!
   rspec
-  theredbutton!
 
 BUNDLED WITH
    1.10.6

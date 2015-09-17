@@ -1,6 +1,6 @@
 require 'git'
 
-module TheRedButton
+module RedButton
   module Utils
     class GitLogReader
 

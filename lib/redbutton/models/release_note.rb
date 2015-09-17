@@ -1,4 +1,4 @@
-module TheRedButton
+module RedButton
   module Models
     class ReleaseNote
 

@@ -1,4 +1,4 @@
-module TheRedButton
+module RedButton
   module Utils
     class VersionFileTool
 

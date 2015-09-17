@@ -1,3 +1,3 @@
-module Redbutton
-  VERSION = '0.0.9'
+module RedButton
+  VERSION = '0.0.8'
 end
