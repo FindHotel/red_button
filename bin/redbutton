@@ -62,7 +62,7 @@ command :create_release_notes do |c|
     release_notes_by_type = commit_messages.inject({}) do |result, (type, commit_messages)|
       result[type] = commit_messages.inject([]) do |result, commit_message|
         result ||= []
-        result << ReleaseNote.new(type, commit_message)
+        result << RedButton::Models::ReleaseNote.new(type, commit_message)
       end if commit_messages.size > 0
       result
     end
