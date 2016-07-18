@@ -12,11 +12,16 @@ class ReleaseNote
 
   def initialize(type, raw_message)
     @type = type
-    @raw_message = raw_message
+    @pr_message = raw_message.split("\n\n")[USEFUL_MESSAGE_LINE_INDEX]
+    @valid = @pr_message.nil? ? false : true
   end
 
   def message
     @clean_message ||= clean
+  end
+
+  def valid?
+    @valid
   end
 
   def self.get_human_readable_type(type)
@@ -29,7 +34,6 @@ class ReleaseNote
 
   private
   def clean
-    message = @raw_message.split("\n\n")[USEFUL_MESSAGE_LINE_INDEX]
-    message.gsub(/^#{TYPES[type]}:?\s?/, '')
+    @pr_message.nil? ? @pr_message : @pr_message.gsub(/^#{TYPES[type]}:?\s?/, '')
   end
 end
