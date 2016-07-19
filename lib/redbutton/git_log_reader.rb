@@ -11,13 +11,18 @@ class GitLogReader
   end
 
   def read
-    previous_tag_commit = @repository.log(LOG_LIMIT).grep(@last_message_matcher).first
+    # previous_tag_commit = @repository.log(LOG_LIMIT).grep(@last_message_matcher).first
 
-    log_range = @repository.log(LOG_LIMIT).between(previous_tag_commit.sha, 'HEAD')
-    result = @matchers.inject({}) do |result, (name, string_matcher)|
-      result[name] ||= []
-      result[name].concat(log_range.grep(string_matcher).map(&:message))
-      result
+    start_tag = @repository.tags.inject([]) do |obj, tag|
+      obj << tag.name if tag.name[/\d+(\.\d+)+/]
+      obj
+    end.last
+
+    log_range = @repository.log(LOG_LIMIT).between(start_tag, 'HEAD')
+    result = @matchers.inject({}) do |obj, (name, string_matcher)|
+      obj[name] ||= []
+      obj[name].concat(log_range.grep(string_matcher).map(&:message))
+      obj
     end
 
     result

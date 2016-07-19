@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 require 'gli'
 require 'redbutton'
+# require 'colorize'
+
 # begin # XXX: Remove this begin/rescue before distributing your app
 # rescue LoadError
 #   STDERR.puts "In development, you need to use `bundle exec bin/redbutton` to run your app"
@@ -11,7 +13,7 @@ require 'redbutton'
 
 include GLI::App
 
-program_desc 'Describe your application here'
+program_desc 'Prepare the release notes for the next version of your Rails app by simply pushing that big Red Button!'
 
 version Redbutton::VERSION
 
@@ -59,11 +61,15 @@ command :create_release_notes do |c|
     glr = GitLogReader.new(options[:project_path], config)
     commit_messages = glr.read
 
-    release_notes_by_type = commit_messages.inject({}) do |result, (type, commit_messages)|
-      result[type] = commit_messages.inject([]) do |result, commit_message|
-        result ||= []
-        result << ReleaseNote.new(type, commit_message)
-      end if commit_messages.size > 0
+    release_notes_by_type = commit_messages.inject({}) do |result, (type, messages)|
+      result[type] = messages.inject([]) do |obj, commit_message|
+        obj ||= []
+        release_note = ReleaseNote.new(type, commit_message)
+        if release_note.valid?
+          obj << release_note
+        end
+        obj
+      end if messages.size > 0
       result
     end
 
@@ -77,6 +83,7 @@ command :create_release_notes do |c|
     writer.write(file_contents)
 
     puts file_contents
+    puts "\e[#{32}m\n\nSuccessfully created release notes for version #{version}\e[0m"
   end
 end
 
@@ -121,9 +128,9 @@ end
 on_error do |exception|
   # Error logic here
   # return false to skip default error handling
-
-  p exception.message
-  p exception.backtrace.first
+  puts "\e[#{31}mOperation has failed with the following trace\e[0m"
+  puts exception.message
+  puts exception.backtrace
 
   true
 end

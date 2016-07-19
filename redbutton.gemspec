@@ -1,13 +1,13 @@
 # Ensure we require the local version and not one we might have installed already
 require File.join([File.dirname(__FILE__),'lib','redbutton','version.rb'])
-spec = Gem::Specification.new do |s| 
+Gem::Specification.new do |s|
   s.name = 'redbutton'
   s.version = Redbutton::VERSION
-  s.author = 'Your Name Here'
+  s.author = 'FindHotel'
   s.email = 'your@email.address.com'
-  s.homepage = 'http://your.website.com'
+  s.homepage = 'http://company.findhotel.net'
   s.platform = Gem::Platform::RUBY
-  s.summary = 'A description of your project'
+  s.summary = 'Prepare the release notes for the next version of your Rails app by simply pushing that big Red Button!'
   s.files = `git ls-files`.split("
 ")
   s.require_paths << 'lib'
